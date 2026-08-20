@@ -1,0 +1,15 @@
+<h1>Лучшие продукты</h1>
+
+<form method="get">
+    <label>Мин. рейтинг: <input type="text" name="min_rating" value="{{ min_rating }}"></label>
+    <label>Мин. скидка: <input type="text" name="min_discount" value="{{ min_discount }}"></label>
+    <button type="submit">Применить</button>
+</form>
+
+<ul>
+    {% for product in products %}
+        <li>{{ product.name }} — рейтинг: {{ product.rating }}, скидка: {{ product.discount }}</li>
+    {% empty %}
+        <li>Нет продуктов, удовлетворяющих фильтрам.</li>
+    {% endfor %}
+</ul>
