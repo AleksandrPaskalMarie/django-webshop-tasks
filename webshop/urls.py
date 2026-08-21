@@ -7,4 +7,5 @@ urlpatterns = [
     path('api/products/<str:sku>/availability/', views.UpdateProductAvailabilityView.as_view(), name='update_availability'),
     path('about-us/', views.AboutUsView.as_view(), name='about_us'),
     path('', views.WelcomeHomeView.as_view(), name='home'),
+    path('faq/', views.FAQView.as_view(), name='faq'),
 ]

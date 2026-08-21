@@ -1,0 +1,14 @@
+<h1>Часто задаваемые вопросы (FAQ)</h1>
+
+{% if faq_items %}
+    <ul>
+        {% for item in faq_items %}
+            <li>
+                <strong>{{ item.question }}</strong><br>
+                <small>{{ item.answer }}</small>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Список вопросов пока пуст.</p>
+{% endif %}

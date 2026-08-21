@@ -148,4 +148,19 @@ class WelcomeHomeView(TemplateView):
             context['username'] = 'Гость'
 
         return context
+    
+class FAQView(TemplateView):
+    template_name = 'webshop/faq.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        faq_items = [
+            {'question': 'Что вы продаете?', 'answer': 'Электроника, книги, одежда.'},
+            {'question': 'Как сделать заказ?', 'answer': 'Добавьте товары в корзину и оформите заказ.'},
+            {'question': 'Есть ли доставка?', 'answer': 'Да, доставляем по всей стране.'},
+        ]
+
+        context['faq_items'] = faq_items
+        return context
    
