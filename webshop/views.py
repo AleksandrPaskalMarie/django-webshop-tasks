@@ -1,5 +1,5 @@
 from django.shortcuts import render
-
+import datetime
 from django.views import View
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
@@ -130,4 +130,22 @@ class UpdateProductAvailabilityView(View):
 class AboutUsView(TemplateView):
     template_name = 'webshop/about.html'
     
-    
+class WelcomeHomeView(TemplateView):
+    template_name = 'webshop/home.html'
+
+    def get_context_data(self, **kwargs):
+        # 1. Получаем базовый контекст от родителя
+        context = super().get_context_data(**kwargs)
+
+        # 2. Добавляем текущий год
+        context['current_year'] = datetime.datetime.now().year
+
+        # 3. Получаем имя из GET-параметра, если есть
+        name = self.request.GET.get('name')
+        if name:
+            context['username'] = name
+        else:
+            context['username'] = 'Гость'
+
+        return context
+   
