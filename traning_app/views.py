@@ -116,3 +116,60 @@ def update_product_price(request, product_id):
         'product_id': product.id,
         'new_price': str(product.price)
     }, status=200)
+    
+def price_range_products(request):
+    # Получаем параметры из GET-запроса
+    min_price = request.GET.get('min_price')
+    max_price = request.GET.get('max_price')
+    
+    # Начинаем с базового QuerySet (все продукты)
+    products = Product.objects.all()
+    
+    # Применяем фильтры, если параметры переданы
+    try:
+        if min_price is not None and min_price != '':
+            min_price = float(min_price)
+            products = products.filter(price__gte=min_price)
+        else:
+            min_price = None
+    except (ValueError, TypeError):
+        min_price = None  # если передана фигня — игнорируем
+    
+    try:
+        if max_price is not None and max_price != '':
+            max_price = float(max_price)
+            products = products.filter(price__lte=max_price)
+        else:
+            max_price = None
+    except (ValueError, TypeError):
+        max_price = None
+    
+    # Сортируем по цене (для удобства)
+    products = products.order_by('price')
+    
+    return render(request, 'price_range.html', {
+        'products': products,
+        'min_price': min_price,
+        'max_price': max_price,
+    })
+from django.views import View
+from django.http import HttpResponse
+
+class HomePageCBV(View):
+    def get(self, request):
+        return HttpResponse("Добро пожаловать на главную страницу, используя Классовое Представление!")
+
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+
+@method_decorator(csrf_exempt, name='dispatch')
+class ContactFormCBV(View):
+    def get(self, request):
+        return HttpResponse("Это страница контактов. Отправьте форму методом POST.")
+    
+    def post(self, request):
+        email = request.POST.get('email')
+        if email:
+            return HttpResponse(f"Спасибо за ваше сообщение от: {email}")
+        else:
+            return HttpResponse("Пожалуйста, укажите ваш email.", status=400)

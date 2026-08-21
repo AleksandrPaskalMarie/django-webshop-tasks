@@ -1,0 +1,17 @@
+<h1>Фильтр по цене</h1>
+
+<form method="get">
+    <label>Мин. цена: <input type="text" name="min_price" value="{{ min_price|default_if_none:'' }}"></label>
+    <label>Макс. цена: <input type="text" name="max_price" value="{{ max_price|default_if_none:'' }}"></label>
+    <button type="submit">Применить</button>
+</form>
+
+{% if products %}
+    <ul>
+        {% for product in products %}
+            <li>{{ product.name }} — {{ product.price }} ₽</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Нет продуктов в указанном ценовом диапазоне.</p>
+{% endif %}
