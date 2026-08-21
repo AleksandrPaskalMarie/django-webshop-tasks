@@ -6,6 +6,7 @@ from django.http import HttpResponse
 from .models import Manufacturer, Product
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from django.views.generic import TemplateView
 
 # Константа, чтобы не хардкодить цифры
 ITEMS_PER_PAGE = 1
@@ -126,3 +127,7 @@ class UpdateProductAvailabilityView(View):
             'message': 'Статус обновлен.',
             'is_available': self.product.is_available
         })
+class AboutUsView(TemplateView):
+    template_name = 'webshop/about.html'
+    
+    
