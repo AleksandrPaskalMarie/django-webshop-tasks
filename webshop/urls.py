@@ -8,4 +8,5 @@ urlpatterns = [
     path('about-us/', views.AboutUsView.as_view(), name='about_us'),
     path('', views.WelcomeHomeView.as_view(), name='home'),
     path('faq/', views.FAQView.as_view(), name='faq'),
+    path('products/<str:product_sku>/detail/', views.ProductDetailWithRelatedView.as_view(), name='product_detail_with_related'),
 ]

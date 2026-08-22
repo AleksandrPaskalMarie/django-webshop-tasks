@@ -1,0 +1,18 @@
+<h1>{{ product.name }}</h1>
+<p>Производитель: {{ product.manufacturer.name }}</p>
+<p>SKU: {{ product.sku }}</p>
+<p>Цена: ${{ product.price }}</p>
+{% if product.description %}<p>Описание: {{ product.description }}</p>{% endif %}
+
+<hr>
+
+<h2>Другие товары от {{ product.manufacturer.name }}</h2>
+{% if related_products %}
+    <ul>
+        {% for item in related_products %}
+            <li>{{ item.name }} - ${{ item.price }}</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Других товаров от этого производителя не найдено.</p>
+{% endif %}

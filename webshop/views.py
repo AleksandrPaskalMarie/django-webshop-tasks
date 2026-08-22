@@ -164,3 +164,29 @@ class FAQView(TemplateView):
         context['faq_items'] = faq_items
         return context
    
+class ProductDetailWithRelatedView(TemplateView):
+    template_name = 'webshop/product_detail_with_related.html'
+    
+    def get_context_data(self, **kwargs):
+        # 1. ВЫЗЫВАЕМ РОДИТЕЛЯ (ОБЯЗАТЕЛЬНО!)
+        context = super().get_context_data(**kwargs)
+        
+        # 2. ДОСТАЁМ SKU ИЗ URL (он придёт в kwargs)
+        product_sku = kwargs.get('product_sku')
+        
+        # 3. ИЩЕМ ПРОДУКТ ИЛИ КИДАЕМ 404
+        product = get_object_or_404(Product, sku=product_sku)
+        
+        # 4. ИЩЕМ СВЯЗАННЫЕ ТОВАРЫ
+        #    Идём от производителя (product.manufacturer),
+        #    берём все его товары (products),
+        #    исключаем текущий (exclude(id=product.id))
+        related_products = product.manufacturer.products.exclude(id=product.id)
+        
+        # 5. КЛАДЁМ В КОНТЕКСТ
+        context['product'] = product
+        context['related_products'] = related_products
+        
+        # 6. ВОЗВРАЩАЕМ
+        return context
+   
