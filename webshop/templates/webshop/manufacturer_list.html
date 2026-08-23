@@ -1,0 +1,22 @@
+<h1>Наши Производители</h1>
+
+<form method="get" action="">
+    <label for="country">Фильтровать по стране:</label>
+    <input type="text" id="country" name="country" value="{{ current_country|default_if_none:'' }}">
+    <button type="submit">Применить фильтр</button>
+    {% if current_country %}<a href=".">Сбросить фильтр</a>{% endif %}
+</form>
+
+{% if manufacturers %}
+    <ul>
+        {% for manufacturer in manufacturers %}
+            <li>
+                <strong>{{ manufacturer.name }}</strong>
+                {% if manufacturer.country %}({{ manufacturer.country }}){% endif %}<br>
+                Активных продуктов: {{ manufacturer.active_product_count }}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Производители не найдены.</p>
+{% endif %}

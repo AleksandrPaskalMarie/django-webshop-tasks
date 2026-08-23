@@ -189,4 +189,37 @@ class ProductDetailWithRelatedView(TemplateView):
         
         # 6. ВОЗВРАЩАЕМ
         return context
-   
+
+from django.db.models import Count, Q
+
+class ManufacturerListView(TemplateView):
+    template_name = 'webshop/manufacturer_list.html'
+
+    def get_context_data(self, **kwargs):
+        # 1. БАЗОВЫЙ КОНТЕКСТ (ОБЯЗАТЕЛЬНО)
+        context = super().get_context_data(**kwargs)
+
+        # 2. ПОЛУЧАЕМ GET-ПАРАМЕТР
+        country_filter = self.request.GET.get('country', '').strip()
+
+        # 3. СТРОИМ ЗАПРОС
+        #    - Аннотируем каждый объект Manufacturer полем active_product_count
+        #    - Считаем только продукты с is_available=True
+        manufacturers = Manufacturer.objects.annotate(
+            active_product_count=Count(
+                'products',  # related_name из модели Product
+                filter=Q(products__is_available=True)  # Только активные!
+            )
+        )
+
+        # 4. ПРИМЕНЯЕМ ФИЛЬТР ПО СТРАНЕ (ЕСЛИ ЗАДАН)
+        if country_filter:
+            manufacturers = manufacturers.filter(
+                country__icontains=country_filter
+            )
+
+        # 5. КЛАДЁМ В КОНТЕКСТ
+        context['manufacturers'] = manufacturers
+        context['current_country'] = country_filter
+
+        return context
