@@ -223,3 +223,10 @@ class ManufacturerListView(TemplateView):
         context['current_country'] = country_filter
 
         return context
+
+
+from django.views.generic import RedirectView
+
+class RedirectToHomeView(RedirectView):
+    pattern_name = 'home_page'
+    permanent = False
