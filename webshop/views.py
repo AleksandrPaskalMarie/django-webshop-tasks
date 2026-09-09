@@ -241,4 +241,17 @@ class OldProductURLRedirectView(RedirectView):
         # Забираем старый SKU из URL
         old_sku = kwargs.get('old_sku')
         # Генерируем новый URL, подставляя этот SKU в pattern_name
-        return reverse(self.pattern_name, kwargs={'product_sku': old_sku})    
+        return reverse(self.pattern_name, kwargs={'product_sku': old_sku})   
+    
+class LegacySearchRedirectView(RedirectView):
+    pattern_name = 'product_search'   # Новый адрес поиска
+    query_string = True               # Передаём все GET-параметры
+    permanent = False                 # Временный редирект (302) 
+        
+from django.http import HttpResponse
+
+def product_search(request):
+    q = request.GET.get('q', '')
+    min_price = request.GET.get('min_price', '')
+    max_price = request.GET.get('max_price', '')
+    return HttpResponse(f"Поиск: q={q}, min={min_price}, max={max_price}")        
