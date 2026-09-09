@@ -2,11 +2,12 @@ from django.shortcuts import render
 import datetime
 from django.views import View
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from .models import Manufacturer, Product
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, RedirectView  # ← Добавь RedirectView
+from django.urls import reverse 
 
 # Константа, чтобы не хардкодить цифры
 ITEMS_PER_PAGE = 1
@@ -225,13 +226,11 @@ class ManufacturerListView(TemplateView):
         return context
 
 
-from django.views.generic import RedirectView
 
 class RedirectToHomeView(RedirectView):
     pattern_name = 'home_page'
     permanent = False
     
-from django.urls import reverse
 
 class OldProductURLRedirectView(RedirectView):
     pattern_name = 'product_detail_with_related'  # Новый URL
@@ -248,10 +247,33 @@ class LegacySearchRedirectView(RedirectView):
     query_string = True               # Передаём все GET-параметры
     permanent = False                 # Временный редирект (302) 
         
-from django.http import HttpResponse
 
 def product_search(request):
     q = request.GET.get('q', '')
     min_price = request.GET.get('min_price', '')
     max_price = request.GET.get('max_price', '')
-    return HttpResponse(f"Поиск: q={q}, min={min_price}, max={max_price}")        
+    return HttpResponse(f"Поиск: q={q}, min={min_price}, max={max_price}")   
+
+class ManufacturerLookupRedirectView(RedirectView):
+    permanent = False  # Временный редирект (302)
+
+    def get_redirect_url(self, *args, **kwargs):
+        # Берём имя из GET-параметра
+        name = self.request.GET.get('name', '').strip()
+
+        if name:
+            # Пытаемся найти производителя (регистронезависимо)
+            try:
+                manufacturer = Manufacturer.objects.get(name__iexact=name)
+                # Если нашли — редирект на дашборд
+                return reverse('manufacturer_dashboard', kwargs={'manufacturer_id': manufacturer.id})
+            except Manufacturer.DoesNotExist:
+                pass  # Если не нашли — идём вниз
+
+        # Если имени нет или производитель не найден — на список
+        return reverse('manufacturer_list')
+
+def manufacturer_dashboard(request, manufacturer_id):
+    manufacturer = get_object_or_404(Manufacturer, id=manufacturer_id)
+    return HttpResponse(f"Дашборд производителя: {manufacturer.name}")
+
