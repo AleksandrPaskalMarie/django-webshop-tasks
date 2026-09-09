@@ -255,25 +255,48 @@ def product_search(request):
     return HttpResponse(f"Поиск: q={q}, min={min_price}, max={max_price}")   
 
 class ManufacturerLookupRedirectView(RedirectView):
-    permanent = False  # Временный редирект (302)
+    permanent = False # Временное перенаправление
 
     def get_redirect_url(self, *args, **kwargs):
-        # Берём имя из GET-параметра
-        name = self.request.GET.get('name', '').strip()
-
-        if name:
-            # Пытаемся найти производителя (регистронезависимо)
-            try:
-                manufacturer = Manufacturer.objects.get(name__iexact=name)
-                # Если нашли — редирект на дашборд
+        manufacturer_name = self.request.GET.get('name', '').strip()
+        
+        if manufacturer_name:
+            # Пытаемся найти производителя по имени (регистронезависимо)
+            manufacturer = Manufacturer.objects.filter(name__iexact=manufacturer_name).first()
+            
+            if manufacturer:
+                # Если найден, перенаправляем на его панель
                 return reverse('manufacturer_dashboard', kwargs={'manufacturer_id': manufacturer.id})
-            except Manufacturer.DoesNotExist:
-                pass  # Если не нашли — идём вниз
-
-        # Если имени нет или производитель не найден — на список
+        
+        # Если имя не указано или производитель не найден, перенаправляем на общий список
         return reverse('manufacturer_list')
 
 def manufacturer_dashboard(request, manufacturer_id):
     manufacturer = get_object_or_404(Manufacturer, id=manufacturer_id)
     return HttpResponse(f"Дашборд производителя: {manufacturer.name}")
 
+class ProductUnavailableView(TemplateView):
+    template_name = 'webshop/product_unavailable.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Получаем SKU из GET-параметра, если он был передан при перенаправлении
+        context['product_sku'] = self.request.GET.get('sku')
+        return context
+
+class ProductAvailabilityRedirectView(RedirectView):
+    permanent = False # Временное перенаправление
+
+    def get_redirect_url(self, *args, **kwargs):
+        product_sku = kwargs.get('product_sku')
+        
+        if product_sku:
+            product = Product.objects.filter(sku=product_sku).first()
+            
+            if product and product.is_available and product.stock_quantity > 0:
+                # Продукт найден и доступен, перенаправляем на его детальную страницу
+                return reverse('product_detail_with_related', kwargs={'product_sku': product_sku})
+        
+        # Продукт не найден, или недоступен, или нет в наличии
+        # Перенаправляем на страницу "недоступно", передавая SKU как GET-параметр
+        return f"{reverse('product_unavailable')}?sku={product_sku}"
