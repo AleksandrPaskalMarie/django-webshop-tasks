@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 from .views import RedirectToHomeView
+from .views import OldProductURLRedirectView
 
 urlpatterns = [
     # ... другие маршруты
@@ -12,4 +13,5 @@ urlpatterns = [
     path('products/<str:product_sku>/detail/', views.ProductDetailWithRelatedView.as_view(), name='product_detail_with_related'),
     path('manufacturers/', views.ManufacturerListView.as_view(), name='manufacturer_list'),
     path('old-home/', RedirectToHomeView.as_view(), name='old_home_redirect'),
+    path('old-products-url/<str:old_sku>/', OldProductURLRedirectView.as_view(), name='old_product_url_redirect'),
 ]

@@ -230,3 +230,15 @@ from django.views.generic import RedirectView
 class RedirectToHomeView(RedirectView):
     pattern_name = 'home_page'
     permanent = False
+    
+from django.urls import reverse
+
+class OldProductURLRedirectView(RedirectView):
+    pattern_name = 'product_detail_with_related'  # Новый URL
+    permanent = True                              # 301 — навсегда
+
+    def get_redirect_url(self, *args, **kwargs):
+        # Забираем старый SKU из URL
+        old_sku = kwargs.get('old_sku')
+        # Генерируем новый URL, подставляя этот SKU в pattern_name
+        return reverse(self.pattern_name, kwargs={'product_sku': old_sku})    
