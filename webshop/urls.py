@@ -36,4 +36,5 @@ urlpatterns = [
     path('manufacturers/<int:pk>/', views.ManufacturerDetailView.as_view(), name='manufacturer_detail'),
     path('products/<str:product_sku>/', views.ProductDetailBySkuView.as_view(), name='product_detail_by_sku'),
     path('manufacturers/<int:pk>/detail-products/', views.ManufacturerProductsDetailView.as_view(), name='manufacturer_products_detail'),
+    path('products/counted/<str:product_sku>/', views.ProductDetailWithViewCount.as_view(), name='product_detail_with_count'),
 ]

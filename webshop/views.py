@@ -325,4 +325,43 @@ class ManufacturerProductsDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         # self.object — это уже найденный производитель
         context['products'] = self.object.products.all()
-        return context    
+        return context  
+    
+class ProductDetailWithViewCount(DetailView):
+    model = Product
+    template_name = 'webshop/product_detail.html'
+    context_object_name = 'product'
+    
+    # Поиск по SKU
+    slug_field = 'sku'
+    slug_url_kwarg = 'product_sku'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        # Получаем объект продукта (уже найден DetailView)
+        product = self.object
+        
+        # Получаем словарь просмотров из сессии (или создаём пустой)
+        product_views = self.request.session.get('product_views', {})
+        
+        # Получаем текущий счётчик для этого SKU (по умолчанию 0)
+        current_count = product_views.get(product.sku, 0)
+        
+        # Увеличиваем счётчик
+        current_count += 1
+        
+        # Сохраняем обратно в словарь
+        product_views[product.sku] = current_count
+        
+        # Сохраняем словарь в сессию
+        self.request.session['product_views'] = product_views
+        
+        # Помечаем сессию как изменённую (чтобы Django её сохранил)
+        self.request.session.modified = True
+        
+        # Добавляем счётчик в контекст
+        context['view_count_in_session'] = current_count
+        
+        return context
+      
