@@ -7,7 +7,8 @@ from .models import Manufacturer, Product
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView, RedirectView  # ← Добавь RedirectView
-from django.urls import reverse 
+from django.urls import reverse
+from django.views.generic import DetailView
 
 # Константа, чтобы не хардкодить цифры
 ITEMS_PER_PAGE = 1
@@ -300,3 +301,8 @@ class ProductAvailabilityRedirectView(RedirectView):
         # Продукт не найден, или недоступен, или нет в наличии
         # Перенаправляем на страницу "недоступно", передавая SKU как GET-параметр
         return f"{reverse('product_unavailable')}?sku={product_sku}"
+
+class ManufacturerDetailView(DetailView):
+    model = Manufacturer
+    template_name = 'webshop/manufacturer_detail.html'
+    context_object_name = 'manufacturer'  # чтобы в шаблоне было {{ manufacturer }}, а не {{ object }}

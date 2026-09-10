@@ -1,0 +1,6 @@
+<h1>Производитель: {{ manufacturer.name }}</h1>
+<p>ID: {{ manufacturer.id }}</p>
+<p>Страна: {{ manufacturer.country|default:"Не указана" }}</p>
+<p>Год основания: {{ manufacturer.founded_year|default:"Не указан" }}</p>
+
+<p><a href="{% url 'manufacturer_list' %}">← Назад к списку производителей</a></p>
