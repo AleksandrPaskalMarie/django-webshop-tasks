@@ -1,0 +1,11 @@
+<h1>{{ product.name }}</h1>
+<p>Производитель: {{ product.manufacturer.name }}</p>
+<p>SKU: {{ product.sku }}</p>
+<p>Цена: ${{ product.price }}</p>
+<p>В наличии: {{ product.stock_quantity }} шт.</p>
+
+{% if product.description %}
+    <p>Описание: {{ product.description }}</p>
+{% endif %}
+
+<p><a href="{% url 'product_search' %}">← Назад к поиску</a></p>

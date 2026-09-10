@@ -34,4 +34,5 @@ urlpatterns = [
     path('product-unavailable/', views.ProductUnavailableView.as_view(), name='product_unavailable'),
     path('product-status/<str:product_sku>/', views.ProductAvailabilityRedirectView.as_view(), name='product_availability_status'),
     path('manufacturers/<int:pk>/', views.ManufacturerDetailView.as_view(), name='manufacturer_detail'),
+    path('products/<str:product_sku>/', views.ProductDetailBySkuView.as_view(), name='product_detail_by_sku'),
 ]

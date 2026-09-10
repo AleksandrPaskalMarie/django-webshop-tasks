@@ -306,3 +306,12 @@ class ManufacturerDetailView(DetailView):
     model = Manufacturer
     template_name = 'webshop/manufacturer_detail.html'
     context_object_name = 'manufacturer'  # чтобы в шаблоне было {{ manufacturer }}, а не {{ object }}
+    
+class ProductDetailBySkuView(DetailView):
+    model = Product
+    template_name = 'webshop/product_detail.html'
+    context_object_name = 'product'
+    
+    # Поиск по SKU, а не по pk
+    slug_field = 'sku'                # Поле в модели, по которому ищем
+    slug_url_kwarg = 'product_sku'    # Имя параметра в URL    
