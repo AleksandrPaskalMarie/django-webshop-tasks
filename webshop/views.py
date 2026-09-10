@@ -315,3 +315,14 @@ class ProductDetailBySkuView(DetailView):
     # Поиск по SKU, а не по pk
     slug_field = 'sku'                # Поле в модели, по которому ищем
     slug_url_kwarg = 'product_sku'    # Имя параметра в URL    
+    
+class ManufacturerProductsDetailView(DetailView):
+    model = Manufacturer
+    template_name = 'webshop/manufacturer_detail_with_products.html'
+    context_object_name = 'manufacturer'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # self.object — это уже найденный производитель
+        context['products'] = self.object.products.all()
+        return context    

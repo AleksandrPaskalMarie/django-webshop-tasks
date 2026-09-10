@@ -1,0 +1,24 @@
+<h1>Производитель: {{ manufacturer.name }}</h1>
+<p>ID: {{ manufacturer.id }}</p>
+<p>Страна: {{ manufacturer.country|default:"Не указана" }}</p>
+<p>Год основания: {{ manufacturer.founded_year|default:"Не указан" }}</p>
+
+<hr>
+
+<h2>Продукты от {{ manufacturer.name }}</h2>
+
+{% if products %}
+    <ul>
+        {% for product in products %}
+            <li>
+                <a href="{% url 'product_detail_by_sku' product_sku=product.sku %}">
+                    {{ product.name }} (SKU: {{ product.sku }}) — ${{ product.price }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>У этого производителя пока нет продуктов.</p>
+{% endif %}
+
+<p><a href="{% url 'manufacturer_list' %}">← Назад к списку производителей</a></p>
