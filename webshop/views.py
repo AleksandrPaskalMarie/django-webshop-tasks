@@ -9,6 +9,8 @@ from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView, RedirectView  # ← Добавь RedirectView
 from django.urls import reverse
 from django.views.generic import DetailView
+from django.db.models.functions import Abs
+from django.db.models import F
 
 # Константа, чтобы не хардкодить цифры
 ITEMS_PER_PAGE = 1
@@ -364,4 +366,30 @@ class ProductDetailWithViewCount(DetailView):
         context['view_count_in_session'] = current_count
         
         return context
+    
+class ProductDetailWithSimilarPriceView(DetailView):
+    model = Product
+    template_name = 'webshop/product_detail.html'
+    context_object_name = 'product'
+
+    slug_field = 'sku'
+    slug_url_kwarg = 'product_sku'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        product = self.object
+
+        # Берём все доступные товары того же производителя, кроме текущего
+        similar = Product.objects.filter(
+            manufacturer=product.manufacturer,
+            is_available=True
+        ).exclude(id=product.id)
+
+        # Аннотируем разницей цен и сортируем по ней
+        similar = similar.annotate(
+            price_diff=Abs(F('price') - product.price)
+        ).order_by('price_diff')[:3]
+
+        context['similar_price_products'] = similar
+        return context    
       

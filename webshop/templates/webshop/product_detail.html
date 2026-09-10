@@ -10,3 +10,18 @@
 
 <p><a href="{% url 'product_search' %}">← Назад к поиску</a></p>
 <p><strong>Вы просмотрели этот товар {{ view_count_in_session }} раз(а) в этой сессии.</strong></p>
+<h2>Ближайшие аналоги по цене</h2>
+
+{% if similar_price_products %}
+    <ul>
+        {% for item in similar_price_products %}
+            <li>
+                <a href="{% url 'product_detail_by_sku' product_sku=item.sku %}">
+                    {{ item.name }} — ${{ item.price }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Аналогичные товары не найдены.</p>
+{% endif %}
