@@ -17,6 +17,7 @@ from django.views.generic import FormView
 from django.urls import reverse_lazy
 from .forms import ContactForm
 from .forms import FeedbackForm
+from .forms import NewsletterSignupForm
 
 # Константа, чтобы не хардкодить цифры
 ITEMS_PER_PAGE = 1
@@ -556,3 +557,15 @@ class FeedbackThankYouView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['rating'] = self.request.GET.get('rating', '')
         return context              
+    
+class NewsletterSignupView(FormView):
+    form_class = NewsletterSignupForm
+    template_name = 'webshop/newsletter_signup.html'
+    success_url = reverse_lazy('newsletter_success')
+
+    def form_valid(self, form):
+        # Имитация сохранения в БД или отправки письма
+        email = form.cleaned_data['email']
+        print(f"[📧] Новая подписка: {email}")
+        return super().form_valid(form)
+    

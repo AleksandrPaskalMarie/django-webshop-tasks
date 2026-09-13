@@ -32,3 +32,9 @@ class FeedbackForm(forms.Form):
         if rating and int(rating) < 3 and not comment:
             self.add_error('comment', "Если оценка ниже 3, пожалуйста, оставьте комментарий.")
         return cleaned_data
+    
+class NewsletterSignupForm(forms.Form):
+    email = forms.EmailField(
+        label="Ваш Email",
+        help_text="Введите Email для подписки на рассылку."
+    )    

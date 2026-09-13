@@ -48,5 +48,6 @@ urlpatterns = [
     path('contact/success/', TemplateView.as_view(template_name='webshop/contact_success.html'), name='contact_success'),
     path('feedback/', views.FeedbackFormView.as_view(), name='feedback_page'),
     path('feedback/thank-you/', views.FeedbackThankYouView.as_view(), name='feedback_thank_you'),
-    
+    path('newsletter/signup/', views.NewsletterSignupView.as_view(), name='newsletter_signup_page'),
+    path('newsletter/success/', TemplateView.as_view(template_name='webshop/newsletter_success.html'), name='newsletter_success'),
 ]
