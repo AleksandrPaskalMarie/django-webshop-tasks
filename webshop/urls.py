@@ -7,7 +7,7 @@ from django.views.generic import TemplateView
 
 urlpatterns = [
     # --- ПОИСК ---
-    path('products/search/', views.product_search, name='product_search'),
+    path('products/search/', views.ProductSearchView.as_view(), name='product_search'),
 
     # --- ПРОИЗВОДИТЕЛИ ---
     path('manufacturers/<int:manufacturer_id>/products/', views.ManufacturerProductsView.as_view(), name='manufacturer_products'),

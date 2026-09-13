@@ -19,6 +19,7 @@ from .forms import ContactForm
 from .forms import FeedbackForm
 from .forms import NewsletterSignupForm
 from .forms import ShippingCalculatorForm
+from .forms import ProductSearchForm
 
 # Константа, чтобы не хардкодить цифры
 ITEMS_PER_PAGE = 1
@@ -599,5 +600,23 @@ class ShippingCalculatorView(FormView):
             context['shipping_cost'] = shipping_cost
 
         return context
-   
+    
+class ProductSearchView(View):
+    def get(self, request):
+        form = ProductSearchForm(request.GET or None)
+        products = Product.objects.all()
+
+        if form.is_valid():
+            query = form.cleaned_data.get('query')
+            max_price = form.cleaned_data.get('max_price')
+
+            if query:
+                products = products.filter(name__icontains=query)
+            if max_price is not None:
+                products = products.filter(price__lte=max_price)
+
+        return render(request, 'webshop/product_search.html', {
+            'form': form,
+            'products': products,
+        })   
     
