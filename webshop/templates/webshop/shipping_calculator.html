@@ -1,0 +1,12 @@
+<h1>Калькулятор стоимости доставки</h1>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Рассчитать стоимость</button>
+</form>
+
+{% if shipping_cost %}
+    <hr>
+    <h2>Стоимость доставки: {{ shipping_cost|floatformat:2 }} руб.</h2>
+{% endif %}

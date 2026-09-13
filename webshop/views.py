@@ -18,6 +18,7 @@ from django.urls import reverse_lazy
 from .forms import ContactForm
 from .forms import FeedbackForm
 from .forms import NewsletterSignupForm
+from .forms import ShippingCalculatorForm
 
 # Константа, чтобы не хардкодить цифры
 ITEMS_PER_PAGE = 1
@@ -568,4 +569,35 @@ class NewsletterSignupView(FormView):
         email = form.cleaned_data['email']
         print(f"[📧] Новая подписка: {email}")
         return super().form_valid(form)
+    
+class ShippingCalculatorView(FormView):
+    form_class = ShippingCalculatorForm
+    template_name = 'webshop/shipping_calculator.html'
+    success_url = reverse_lazy('shipping_calculator_page')
+
+    def form_valid(self, form):
+        weight = form.cleaned_data['weight']
+        distance = form.cleaned_data['distance']
+
+        # Расчёт стоимости
+        shipping_cost = (float(weight) * 50) + (distance * 10)
+
+        # Сохраняем в сессию
+        self.request.session['shipping_cost'] = shipping_cost
+        self.request.session.modified = True
+
+        print(f"[🚚] Вес: {weight} кг, Расстояние: {distance} км, Стоимость: {shipping_cost} руб.")
+
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Получаем стоимость из сессии
+        shipping_cost = self.request.session.pop('shipping_cost', None)
+        if shipping_cost is not None:
+            context['shipping_cost'] = shipping_cost
+
+        return context
+   
     
