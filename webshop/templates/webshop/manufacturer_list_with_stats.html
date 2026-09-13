@@ -1,0 +1,15 @@
+<h1>Производители и статистика продуктов</h1>
+
+{% if manufacturer_list %}
+    <ul>
+        {% for manufacturer in manufacturer_list %}
+            <li>
+                <strong>{{ manufacturer.name }}</strong> ({{ manufacturer.country|default:"Не указана" }})<br>
+                Доступных продуктов: {{ manufacturer.available_count }}<br>
+                Недоступных продуктов: {{ manufacturer.unavailable_count }}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Производителей не найдено.</p>
+{% endif %}

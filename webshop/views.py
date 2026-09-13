@@ -12,6 +12,7 @@ from django.views.generic import DetailView
 from django.db.models.functions import Abs
 from django.db.models import F
 from django.views.generic import ListView
+from django.db.models import Count, Q
 
 # Константа, чтобы не хардкодить цифры
 ITEMS_PER_PAGE = 1
@@ -461,3 +462,20 @@ class ProductSortableListView(ListView):
         # Передаём текущее значение сортировки в шаблон
         context['current_sort_by'] = self.request.GET.get('sort_by', '').strip()
         return context    
+    
+class ManufacturerStatsListView(ListView):
+    model = Manufacturer
+    template_name = 'webshop/manufacturer_list_with_stats.html'
+    context_object_name = 'manufacturer_list'
+
+    def get_queryset(self):
+        return Manufacturer.objects.annotate(
+            available_count=Count(
+                'products',
+                filter=Q(products__is_available=True)
+            ),
+            unavailable_count=Count(
+                'products',
+                filter=Q(products__is_available=False)
+            )
+        )    

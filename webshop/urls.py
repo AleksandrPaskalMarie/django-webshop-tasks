@@ -36,6 +36,7 @@ urlpatterns = [
     path('product-status/<str:product_sku>/', views.ProductAvailabilityRedirectView.as_view(), name='product_availability_status'),
     path('products/filtered/', views.ProductFilteredListView.as_view(), name='product_filtered_list'),
     path('manufacturers/<int:pk>/', views.ManufacturerDetailView.as_view(), name='manufacturer_detail'),
+    path('manufacturers/stats/', views.ManufacturerStatsListView.as_view(), name='manufacturer_stats'),
     path('products/<str:product_sku>/', views.ProductDetailBySkuView.as_view(), name='product_detail_by_sku'),
     path('manufacturers/<int:pk>/detail-products/', views.ManufacturerProductsDetailView.as_view(), name='manufacturer_products_detail'),
     path('products/counted/<str:product_sku>/', views.ProductDetailWithViewCount.as_view(), name='product_detail_with_count'),
