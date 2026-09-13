@@ -1,0 +1,25 @@
+<h1>Список продуктов</h1>
+
+<form method="get" action="">
+    <label for="manufacturer_name">Фильтр по производителю:</label>
+    <input type="text" id="manufacturer_name" name="manufacturer_name" value="{{ current_manufacturer_name|default_if_none:'' }}">
+    <button type="submit">Применить фильтр</button>
+    {% if current_manufacturer_name %}<a href=".">Сбросить фильтр</a>{% endif %}
+</form>
+
+<hr>
+
+{% if product_list %}
+    <ul>
+        {% for product in product_list %}
+            <li>
+                <a href="{% url 'product_detail_by_sku' product_sku=product.sku %}">
+                    {{ product.name }}
+                </a>
+                ({{ product.manufacturer.name }}) — ${{ product.price }}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Продуктов не найдено.</p>
+{% endif %}

@@ -33,10 +33,12 @@ urlpatterns = [
     path('find-manufacturer/', views.ManufacturerLookupRedirectView.as_view(), name='find_manufacturer'),
     path('product-unavailable/', views.ProductUnavailableView.as_view(), name='product_unavailable'),
     path('product-status/<str:product_sku>/', views.ProductAvailabilityRedirectView.as_view(), name='product_availability_status'),
+    path('products/filtered/', views.ProductFilteredListView.as_view(), name='product_filtered_list'),
     path('manufacturers/<int:pk>/', views.ManufacturerDetailView.as_view(), name='manufacturer_detail'),
     path('products/<str:product_sku>/', views.ProductDetailBySkuView.as_view(), name='product_detail_by_sku'),
     path('manufacturers/<int:pk>/detail-products/', views.ManufacturerProductsDetailView.as_view(), name='manufacturer_products_detail'),
     path('products/counted/<str:product_sku>/', views.ProductDetailWithViewCount.as_view(), name='product_detail_with_count'),
     path('products/similar/<str:product_sku>/', views.ProductDetailWithSimilarPriceView.as_view(), name='product_detail_with_similar_price'),
     path('manufacturers/', views.ManufacturerListView.as_view(), name='manufacturer_list'),
+    
 ]

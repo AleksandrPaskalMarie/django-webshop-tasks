@@ -399,4 +399,29 @@ class ManufacturerListView(ListView):
     model = Manufacturer
     template_name = 'webshop/manufacturer_list.html'
     context_object_name = 'manufacturer_list'
-    paginate_by = 5  # по 5 производителей на страницу      
+    paginate_by = 5  # по 5 производителей на страницу  
+    
+class ProductFilteredListView(ListView):
+    model = Product
+    template_name = 'webshop/product_list_filtered.html'
+    context_object_name = 'product_list'
+
+    def get_queryset(self):
+        # Базовый QuerySet: только доступные продукты
+        queryset = Product.objects.filter(is_available=True)
+        
+        # Получаем GET-параметр
+        manufacturer_name = self.request.GET.get('manufacturer_name', '').strip()
+        
+        # Если параметр не пуст — фильтруем по имени производителя
+        if manufacturer_name:
+            queryset = queryset.filter(manufacturer__name__icontains=manufacturer_name)
+        
+        # Сортируем по имени продукта
+        return queryset.order_by('name')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Передаём текущее значение фильтра в шаблон
+        context['current_manufacturer_name'] = self.request.GET.get('manufacturer_name', '').strip()
+        return context    
