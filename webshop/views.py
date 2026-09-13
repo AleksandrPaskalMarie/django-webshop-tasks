@@ -16,6 +16,7 @@ from django.db.models import Count, Q
 from django.views.generic import FormView
 from django.urls import reverse_lazy
 from .forms import ContactForm
+from .forms import FeedbackForm
 
 # Константа, чтобы не хардкодить цифры
 ITEMS_PER_PAGE = 1
@@ -524,4 +525,34 @@ class ContactFormView(FormView):
         print(f"[📩] Новое сообщение от {form.cleaned_data['name']}")
         print(f"[📧] Email: {form.cleaned_data['email']}")
         print(f"[💬] Сообщение: {form.cleaned_data['message']}")
-        return super().form_valid(form)            
+        return super().form_valid(form)  
+    
+class FeedbackFormView(FormView):
+    form_class = FeedbackForm
+    template_name = 'webshop/feedback_form.html'
+    success_url = reverse_lazy('feedback_thank_you')
+
+    def form_valid(self, form):
+        # Сохраняем форму в self, чтобы get_success_url() мог её использовать
+        self.form = form
+        
+        # Логируем данные
+        print(f"[📝] Новая оценка: {form.cleaned_data['rating']}")
+        print(f"[💬] Комментарий: {form.cleaned_data.get('comment', 'нет')}")
+        print(f"[📧] Email: {form.cleaned_data.get('email', 'нет')}")
+        
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        rating = self.form.cleaned_data.get('rating', '')
+        base_url = reverse_lazy('feedback_thank_you')
+        return f"{base_url}?rating={rating}"
+
+
+class FeedbackThankYouView(TemplateView):
+    template_name = 'webshop/feedback_thank_you.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['rating'] = self.request.GET.get('rating', '')
+        return context              

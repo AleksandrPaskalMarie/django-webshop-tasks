@@ -45,6 +45,8 @@ urlpatterns = [
     path('products/similar/<str:product_sku>/', views.ProductDetailWithSimilarPriceView.as_view(), name='product_detail_with_similar_price'),
     path('manufacturers/', views.ManufacturerListView.as_view(), name='manufacturer_list'),
     path('contact/', views.ContactFormView.as_view(), name='contact_page'),
-    path('contact/success/', TemplateView.as_view(template_name='webshop/contact_success.html'), name='contact_success')
+    path('contact/success/', TemplateView.as_view(template_name='webshop/contact_success.html'), name='contact_success'),
+    path('feedback/', views.FeedbackFormView.as_view(), name='feedback_page'),
+    path('feedback/thank-you/', views.FeedbackThankYouView.as_view(), name='feedback_thank_you'),
     
 ]
