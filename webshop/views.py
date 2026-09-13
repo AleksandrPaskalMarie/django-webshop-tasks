@@ -479,3 +479,34 @@ class ManufacturerStatsListView(ListView):
                 filter=Q(products__is_available=False)
             )
         )    
+        
+class ProductAdvancedFilterListView(ListView):
+    model = Product
+    template_name = 'webshop/product_list_advanced_filter.html'
+    context_object_name = 'product_list'
+
+    def get_queryset(self):
+        queryset = Product.objects.all()
+
+        # Фильтр по наличию
+        available = self.request.GET.get('available', '').strip()
+        if available == 'true':
+            queryset = queryset.filter(is_available=True)
+        elif available == 'false':
+            queryset = queryset.filter(is_available=False)
+
+        # Фильтр по минимальной цене
+        min_price = self.request.GET.get('min_price', '').strip()
+        if min_price:
+            try:
+                queryset = queryset.filter(price__gte=float(min_price))
+            except ValueError:
+                pass  # если ввели не число — игнорируем
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['current_available'] = self.request.GET.get('available', '').strip()
+        context['current_min_price'] = self.request.GET.get('min_price', '').strip()
+        return context        

@@ -14,6 +14,7 @@ urlpatterns = [
     path('manufacturers/<int:manufacturer_id>/dashboard/', views.manufacturer_dashboard, name='manufacturer_dashboard'),
 
     # --- API ---
+    path('products/advanced-filter/', views.ProductAdvancedFilterListView.as_view(), name='product_advanced_filter'),
     path('api/products/<str:sku>/availability/', views.UpdateProductAvailabilityView.as_view(), name='update_availability'),
 
     # --- СТАТИЧЕСКИЕ СТРАНИЦЫ ---
