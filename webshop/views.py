@@ -425,3 +425,39 @@ class ProductFilteredListView(ListView):
         # Передаём текущее значение фильтра в шаблон
         context['current_manufacturer_name'] = self.request.GET.get('manufacturer_name', '').strip()
         return context    
+    
+from django.views.generic import ListView
+from .models import Product
+
+class ProductSortableListView(ListView):
+    model = Product
+    template_name = 'webshop/product_list_sortable.html'
+    context_object_name = 'product_list'
+
+    # Допустимые поля для сортировки
+    ALLOWED_SORT_FIELDS = [
+        'name', '-name',
+        'price', '-price',
+        'stock_quantity', '-stock_quantity',
+    ]
+
+    def get_queryset(self):
+        queryset = Product.objects.all()
+        
+        # Получаем GET-параметр
+        sort_by = self.request.GET.get('sort_by', '').strip()
+        
+        # Если параметр допустим — сортируем по нему
+        if sort_by in self.ALLOWED_SORT_FIELDS:
+            queryset = queryset.order_by(sort_by)
+        else:
+            # Иначе — сортировка по умолчанию
+            queryset = queryset.order_by('name')
+        
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Передаём текущее значение сортировки в шаблон
+        context['current_sort_by'] = self.request.GET.get('sort_by', '').strip()
+        return context    

@@ -31,6 +31,7 @@ urlpatterns = [
 
     # --- УМНЫЙ РЕДИРЕКТ ПО ИМЕНИ ПРОИЗВОДИТЕЛЯ ---
     path('find-manufacturer/', views.ManufacturerLookupRedirectView.as_view(), name='find_manufacturer'),
+    path('products/sortable/', views.ProductSortableListView.as_view(), name='product_sortable_list'),
     path('product-unavailable/', views.ProductUnavailableView.as_view(), name='product_unavailable'),
     path('product-status/<str:product_sku>/', views.ProductAvailabilityRedirectView.as_view(), name='product_availability_status'),
     path('products/filtered/', views.ProductFilteredListView.as_view(), name='product_filtered_list'),

@@ -1,0 +1,31 @@
+<h1>Сортируемый список продуктов</h1>
+
+<form method="get" action="">
+    <label for="sort_by">Сортировать по:</label>
+    <select name="sort_by" id="sort_by" onchange="this.form.submit()">
+        <option value="name" {% if current_sort_by == 'name' %}selected{% endif %}>Названию (А-Я)</option>
+        <option value="-name" {% if current_sort_by == '-name' %}selected{% endif %}>Названию (Я-А)</option>
+        <option value="price" {% if current_sort_by == 'price' %}selected{% endif %}>Цене (по возрастанию)</option>
+        <option value="-price" {% if current_sort_by == '-price' %}selected{% endif %}>Цене (по убыванию)</option>
+        <option value="stock_quantity" {% if current_sort_by == 'stock_quantity' %}selected{% endif %}>Количеству на складе (по возрастанию)</option>
+        <option value="-stock_quantity" {% if current_sort_by == '-stock_quantity' %}selected{% endif %}>Количеству на складе (по убыванию)</option>
+    </select>
+    <noscript><button type="submit">Сортировать</button></noscript>
+</form>
+
+<hr>
+
+{% if product_list %}
+    <ul>
+        {% for product in product_list %}
+            <li>
+                <a href="{% url 'product_detail_by_sku' product_sku=product.sku %}">
+                    {{ product.name }}
+                </a>
+                ({{ product.manufacturer.name }}) — ${{ product.price }} (В наличии: {{ product.stock_quantity }})
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Продуктов не найдено.</p>
+{% endif %}
