@@ -3,6 +3,7 @@ from . import views
 from .views import RedirectToHomeView
 from .views import OldProductURLRedirectView
 from .views import LegacySearchRedirectView
+from django.views.generic import TemplateView
 
 urlpatterns = [
     # --- ПОИСК ---
@@ -43,5 +44,7 @@ urlpatterns = [
     path('products/counted/<str:product_sku>/', views.ProductDetailWithViewCount.as_view(), name='product_detail_with_count'),
     path('products/similar/<str:product_sku>/', views.ProductDetailWithSimilarPriceView.as_view(), name='product_detail_with_similar_price'),
     path('manufacturers/', views.ManufacturerListView.as_view(), name='manufacturer_list'),
+    path('contact/', views.ContactFormView.as_view(), name='contact_page'),
+    path('contact/success/', TemplateView.as_view(template_name='webshop/contact_success.html'), name='contact_success')
     
 ]

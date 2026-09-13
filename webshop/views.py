@@ -13,6 +13,9 @@ from django.db.models.functions import Abs
 from django.db.models import F
 from django.views.generic import ListView
 from django.db.models import Count, Q
+from django.views.generic import FormView
+from django.urls import reverse_lazy
+from .forms import ContactForm
 
 # Константа, чтобы не хардкодить цифры
 ITEMS_PER_PAGE = 1
@@ -509,4 +512,16 @@ class ProductAdvancedFilterListView(ListView):
         context = super().get_context_data(**kwargs)
         context['current_available'] = self.request.GET.get('available', '').strip()
         context['current_min_price'] = self.request.GET.get('min_price', '').strip()
-        return context        
+        return context
+    
+class ContactFormView(FormView):
+    form_class = ContactForm
+    template_name = 'webshop/contact_form.html'
+    success_url = reverse_lazy('contact_success')
+
+    def form_valid(self, form):
+        # Имитация отправки email или сохранения
+        print(f"[📩] Новое сообщение от {form.cleaned_data['name']}")
+        print(f"[📧] Email: {form.cleaned_data['email']}")
+        print(f"[💬] Сообщение: {form.cleaned_data['message']}")
+        return super().form_valid(form)            
