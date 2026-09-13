@@ -1,0 +1,15 @@
+<h1>Контактная форма</h1>
+
+<form method="post">
+    {% csrf_token %} {# ОБЯЗАТЕЛЬНО! #}
+
+    {{ form.as_p }} {# Рендерит поля формы как параграфы #}
+    {# Вы также можете рендерить каждое поле по отдельности для более тонкой настройки #}
+    {# <p>
+        <label for="{{ form.name.id_for_label }}">{{ form.name.label }}:</label>
+        {{ form.name }}
+        {% if form.name.errors %}<ul class="errorlist">{% for error in form.name.errors %}<li>{{ error }}</li>{% endfor %}</ul>{% endif %}
+    </p> #}
+
+    <button type="submit">Отправить</button>
+</form>
