@@ -11,6 +11,7 @@ from django.urls import reverse
 from django.views.generic import DetailView
 from django.db.models.functions import Abs
 from django.db.models import F
+from django.views.generic import ListView
 
 # Константа, чтобы не хардкодить цифры
 ITEMS_PER_PAGE = 1
@@ -392,4 +393,10 @@ class ProductDetailWithSimilarPriceView(DetailView):
 
         context['similar_price_products'] = similar
         return context    
-      
+    
+    
+class ManufacturerListView(ListView):
+    model = Manufacturer
+    template_name = 'webshop/manufacturer_list.html'
+    context_object_name = 'manufacturer_list'
+    paginate_by = 5  # по 5 производителей на страницу      

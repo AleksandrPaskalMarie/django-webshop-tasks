@@ -1,22 +1,37 @@
-<h1>Наши Производители</h1>
+<h1>Список производителей</h1>
 
-<form method="get" action="">
-    <label for="country">Фильтровать по стране:</label>
-    <input type="text" id="country" name="country" value="{{ current_country|default_if_none:'' }}">
-    <button type="submit">Применить фильтр</button>
-    {% if current_country %}<a href=".">Сбросить фильтр</a>{% endif %}
-</form>
-
-{% if manufacturers %}
+{% if manufacturer_list %}
     <ul>
-        {% for manufacturer in manufacturers %}
+        {% for manufacturer in manufacturer_list %}
             <li>
-                <strong>{{ manufacturer.name }}</strong>
-                {% if manufacturer.country %}({{ manufacturer.country }}){% endif %}<br>
-                Активных продуктов: {{ manufacturer.active_product_count }}
+                <a href="{% url 'manufacturer_detail' pk=manufacturer.pk %}">
+                    {{ manufacturer.name }}
+                </a>
+                {% if manufacturer.country %}({{ manufacturer.country }}){% endif %}
             </li>
         {% endfor %}
     </ul>
+
+    {% if is_paginated %}
+        <div class="pagination">
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1">&laquo; первая</a>
+                    <a href="?page={{ page_obj.previous_page_number }}">предыдущая</a>
+                {% endif %}
+
+                <span class="current">
+                    Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
+                </span>
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">следующая</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}">последняя &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+    {% endif %}
+
 {% else %}
-    <p>Производители не найдены.</p>
+    <p>Производителей пока нет.</p>
 {% endif %}
