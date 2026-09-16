@@ -51,4 +51,6 @@ urlpatterns = [
     path('newsletter/signup/', views.NewsletterSignupView.as_view(), name='newsletter_signup_page'),
     path('newsletter/success/', TemplateView.as_view(template_name='webshop/newsletter_success.html'), name='newsletter_success'),
     path('shipping-calculator/', views.ShippingCalculatorView.as_view(), name='shipping_calculator_page'),
+    path('ask/', views.AskQuestionView.as_view(), name='ask_question_page'),
+    path('ask/sent/', views.QuestionSentView.as_view(), name='question_sent'),
 ]

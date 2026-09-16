@@ -20,6 +20,7 @@ from .forms import FeedbackForm
 from .forms import NewsletterSignupForm
 from .forms import ShippingCalculatorForm
 from .forms import ProductSearchForm
+from .forms import AskQuestionForm
 
 # Константа, чтобы не хардкодить цифры
 ITEMS_PER_PAGE = 1
@@ -619,4 +620,18 @@ class ProductSearchView(View):
             'form': form,
             'products': products,
         })   
-    
+
+class AskQuestionView(FormView):
+    form_class = AskQuestionForm
+    template_name = 'webshop/ask_question_form.html'
+    success_url = reverse_lazy('question_sent')
+
+    def form_valid(self, form):
+        print(f"[❓] Новый вопрос от {form.cleaned_data['name']}")
+        print(f"[📧] Email: {form.cleaned_data['email']}")
+        print(f"[💬] Вопрос: {form.cleaned_data['question']}")
+        return super().form_valid(form)
+
+
+class QuestionSentView(TemplateView):
+    template_name = 'webshop/question_sent.html'    
