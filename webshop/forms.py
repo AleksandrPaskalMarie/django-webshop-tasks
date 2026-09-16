@@ -78,4 +78,20 @@ class AskQuestionForm(forms.Form):
 class RectangleAreaForm(forms.Form):
     length = forms.DecimalField(label="Длина (м)", min_value=Decimal('0.1'))
     width = forms.DecimalField(label="Ширина (м)", min_value=Decimal('0.1'))     
-    width = forms.DecimalField(label="Ширина (м)", min_value=Decimal('0.1'))     
+    width = forms.DecimalField(label="Ширина (м)", min_value=Decimal('0.1')) 
+    
+class UserRegistrationForm(forms.Form):
+    username = forms.CharField(label="Имя пользователя", max_length=150)
+    email = forms.EmailField(label="Email")
+    password = forms.CharField(label="Пароль", widget=forms.PasswordInput)
+    password_confirm = forms.CharField(label="Подтвердите пароль", widget=forms.PasswordInput)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get('password')
+        password_confirm = cleaned_data.get('password_confirm')
+
+        if password and password_confirm and password != password_confirm:
+            self.add_error('password_confirm', "Пароли не совпадают.")
+
+        return cleaned_data        

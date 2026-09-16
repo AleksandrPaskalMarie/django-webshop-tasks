@@ -55,4 +55,6 @@ urlpatterns = [
     path('ask/sent/', views.QuestionSentView.as_view(), name='question_sent'),
     path('area/calculate/', views.RectangleAreaView.as_view(), name='calculate_area_page'),
     path('area/result/', views.RectangleAreaResultView.as_view(), name='rectangle_area_result'),
+    path('register/', views.UserRegistrationView.as_view(), name='register_user_page'),
+    path('register/success/', views.RegistrationSuccessView.as_view(), name='registration_success'),
 ]

@@ -22,6 +22,7 @@ from .forms import ShippingCalculatorForm
 from .forms import ProductSearchForm
 from .forms import AskQuestionForm
 from .forms import RectangleAreaForm
+from .forms import UserRegistrationForm
 
 # Константа, чтобы не хардкодить цифры
 ITEMS_PER_PAGE = 1
@@ -667,3 +668,32 @@ class RectangleAreaResultView(TemplateView):
             context['area'] = area
         return context
     
+    
+class UserRegistrationView(FormView):
+    form_class = UserRegistrationForm
+    template_name = 'webshop/register_user_form.html'
+    success_url = reverse_lazy('registration_success')
+
+    def form_valid(self, form):
+        username = form.cleaned_data['username']
+        email = form.cleaned_data['email']
+
+        # Выводим в консоль (без пароля!)
+        print(f"[👤] Новый пользователь: {username}")
+        print(f"[📧] Email: {email}")
+
+        # Сохраняем username в сессию для страницы успеха
+        self.request.session['registered_username'] = username
+        self.request.session.modified = True
+
+        return super().form_valid(form)
+
+
+class RegistrationSuccessView(TemplateView):
+    template_name = 'webshop/registration_success.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        username = self.request.session.pop('registered_username', 'Гость')
+        context['username'] = username
+        return context    
