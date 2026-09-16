@@ -32,6 +32,8 @@ urlpatterns = [
     path('legacy-search/', LegacySearchRedirectView.as_view(), name='legacy_search_redirect'),
 
     # --- УМНЫЙ РЕДИРЕКТ ПО ИМЕНИ ПРОИЗВОДИТЕЛЯ ---
+    path('products/add/', views.ProductCreateView.as_view(), name='product_create_page'),
+path('products/add/success/', views.ProductCreatedSuccessView.as_view(), name='product_created_success_page'),
     path('find-manufacturer/', views.ManufacturerLookupRedirectView.as_view(), name='find_manufacturer'),
     path('products/sortable/', views.ProductSortableListView.as_view(), name='product_sortable_list'),
     path('product-unavailable/', views.ProductUnavailableView.as_view(), name='product_unavailable'),
@@ -59,4 +61,5 @@ urlpatterns = [
     path('register/success/', views.RegistrationSuccessView.as_view(), name='registration_success'),
     path('order/custom/', views.CustomProductOrderView.as_view(), name='custom_order_page'),
     path('order/confirm/', views.OrderConfirmationView.as_view(), name='order_confirmation'),
+    
 ]

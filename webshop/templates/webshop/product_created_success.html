@@ -1,0 +1,11 @@
+<h1>Товар успешно добавлен!</h1>
+<p>Информация о новом товаре:</p>
+<ul>
+    <li>Название: <strong>{{ product_name }}</strong></li>
+    <li>Производитель: <strong>{{ manufacturer_name }}</strong></li>
+    <li>Артикул: <strong>{{ sku }}</strong></li>
+    <li>Цена: <strong>${{ price }}</strong></li>
+    <li>Количество на складе: <strong>{{ stock_quantity }}</strong></li>
+</ul>
+<p><a href="{% url 'product_create_page' %}">Добавить ещё товар</a></p>
+<p><a href="/">На главную</a></p>

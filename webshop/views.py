@@ -24,6 +24,7 @@ from .forms import AskQuestionForm
 from .forms import RectangleAreaForm
 from .forms import UserRegistrationForm
 from .forms import CustomProductOrderForm
+from .forms import ProductCreateForm
 
 
 
@@ -734,4 +735,48 @@ class OrderConfirmationView(TemplateView):
         context['product_name'] = order_data.get('product_name', '')
         context['desired_color'] = order_data.get('desired_color', '')
         context['quantity'] = order_data.get('quantity', '')
-        return context     
+        return context   
+    
+class ProductCreateView(FormView):
+    form_class = ProductCreateForm
+    template_name = 'webshop/product_create_form.html'
+
+    def form_valid(self, form):
+        # Создаём новый объект Product
+        product = Product.objects.create(
+            name=form.cleaned_data['name'],
+            manufacturer=form.cleaned_data['manufacturer'],
+            sku=form.cleaned_data['sku'],
+            description=form.cleaned_data['description'],
+            price=form.cleaned_data['price'],
+            stock_quantity=form.cleaned_data['stock_quantity'],
+            is_available=True,
+        )
+
+        print(f"[🆕] Создан товар: {product.name} (SKU: {product.sku})")
+
+        # Передаём данные через GET-параметры
+        from django.urls import reverse
+        self.success_url = (
+            reverse('product_created_success_page') +
+            f"?product_name={product.name}"
+            f"&manufacturer_name={product.manufacturer.name}"
+            f"&sku={product.sku}"
+            f"&price={product.price}"
+            f"&stock_quantity={product.stock_quantity}"
+        )
+
+        return super().form_valid(form)
+
+
+class ProductCreatedSuccessView(TemplateView):
+    template_name = 'webshop/product_created_success.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['product_name'] = self.request.GET.get('product_name', '')
+        context['manufacturer_name'] = self.request.GET.get('manufacturer_name', '')
+        context['sku'] = self.request.GET.get('sku', '')
+        context['price'] = self.request.GET.get('price', '')
+        context['stock_quantity'] = self.request.GET.get('stock_quantity', '')
+        return context      
