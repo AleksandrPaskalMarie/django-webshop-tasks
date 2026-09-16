@@ -57,4 +57,6 @@ urlpatterns = [
     path('area/result/', views.RectangleAreaResultView.as_view(), name='rectangle_area_result'),
     path('register/', views.UserRegistrationView.as_view(), name='register_user_page'),
     path('register/success/', views.RegistrationSuccessView.as_view(), name='registration_success'),
+    path('order/custom/', views.CustomProductOrderView.as_view(), name='custom_order_page'),
+    path('order/confirm/', views.OrderConfirmationView.as_view(), name='order_confirmation'),
 ]

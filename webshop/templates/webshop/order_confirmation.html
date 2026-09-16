@@ -1,0 +1,9 @@
+<h1>Ваш заказ подтвержден!</h1>
+<p>Мы получили ваш запрос на:</p>
+<ul>
+    <li>Продукт: <strong>{{ product_name }}</strong></li>
+    <li>Цвет: <strong>{{ desired_color }}</strong></li>
+    <li>Количество: <strong>{{ quantity }}</strong></li>
+</ul>
+<p>Наш менеджер свяжется с вами в ближайшее время для уточнения деталей.</p>
+<p><a href="{% url 'custom_order_page' %}">Сделать ещё один заказ</a></p>

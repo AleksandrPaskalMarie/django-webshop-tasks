@@ -23,6 +23,9 @@ from .forms import ProductSearchForm
 from .forms import AskQuestionForm
 from .forms import RectangleAreaForm
 from .forms import UserRegistrationForm
+from .forms import CustomProductOrderForm
+
+
 
 # Константа, чтобы не хардкодить цифры
 ITEMS_PER_PAGE = 1
@@ -696,4 +699,39 @@ class RegistrationSuccessView(TemplateView):
         context = super().get_context_data(**kwargs)
         username = self.request.session.pop('registered_username', 'Гость')
         context['username'] = username
-        return context    
+        return context   
+    
+class CustomProductOrderView(FormView):
+    form_class = CustomProductOrderForm
+    template_name = 'webshop/custom_order_form.html'
+    success_url = reverse_lazy('order_confirmation')
+
+    def form_valid(self, form):
+        product_name = form.cleaned_data['product_name']
+        desired_color = form.cleaned_data['desired_color']
+        quantity = form.cleaned_data['quantity']
+
+        # Выводим в консоль
+        print(f"[📦] Заказ: {product_name}, цвет: {desired_color}, кол-во: {quantity}")
+
+        # Сохраняем в сессию
+        self.request.session['order_data'] = {
+            'product_name': product_name,
+            'desired_color': desired_color,
+            'quantity': quantity,
+        }
+        self.request.session.modified = True
+
+        return super().form_valid(form)
+
+
+class OrderConfirmationView(TemplateView):
+    template_name = 'webshop/order_confirmation.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        order_data = self.request.session.pop('order_data', {})
+        context['product_name'] = order_data.get('product_name', '')
+        context['desired_color'] = order_data.get('desired_color', '')
+        context['quantity'] = order_data.get('quantity', '')
+        return context     
