@@ -53,4 +53,6 @@ urlpatterns = [
     path('shipping-calculator/', views.ShippingCalculatorView.as_view(), name='shipping_calculator_page'),
     path('ask/', views.AskQuestionView.as_view(), name='ask_question_page'),
     path('ask/sent/', views.QuestionSentView.as_view(), name='question_sent'),
+    path('area/calculate/', views.RectangleAreaView.as_view(), name='calculate_area_page'),
+    path('area/result/', views.RectangleAreaResultView.as_view(), name='rectangle_area_result'),
 ]

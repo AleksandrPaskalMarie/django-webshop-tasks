@@ -21,6 +21,7 @@ from .forms import NewsletterSignupForm
 from .forms import ShippingCalculatorForm
 from .forms import ProductSearchForm
 from .forms import AskQuestionForm
+from .forms import RectangleAreaForm
 
 # Константа, чтобы не хардкодить цифры
 ITEMS_PER_PAGE = 1
@@ -635,3 +636,34 @@ class AskQuestionView(FormView):
 
 class QuestionSentView(TemplateView):
     template_name = 'webshop/question_sent.html'    
+    
+class RectangleAreaView(FormView):
+    form_class = RectangleAreaForm
+    template_name = 'webshop/rectangle_area_form.html'
+    success_url = reverse_lazy('rectangle_area_result')
+
+    def form_valid(self, form):
+        length = form.cleaned_data['length']
+        width = form.cleaned_data['width']
+        area = length * width
+
+        # Выводим в консоль
+        print(f"[📐] Длина: {length} м, Ширина: {width} м, Площадь: {area} кв.м.")
+
+        # Сохраняем в сессию
+        self.request.session['area'] = float(area)
+        self.request.session.modified = True
+
+        return super().form_valid(form)
+
+
+class RectangleAreaResultView(TemplateView):
+    template_name = 'webshop/rectangle_area_result.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        area = self.request.session.pop('area', None)
+        if area is not None:
+            context['area'] = area
+        return context
+    

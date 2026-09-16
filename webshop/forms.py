@@ -73,4 +73,9 @@ class ProductSearchForm(forms.Form):
 class AskQuestionForm(forms.Form):
     name = forms.CharField(label="Ваше имя", max_length=100)
     email = forms.EmailField(label="Ваш Email")
-    question = forms.CharField(label="Ваш вопрос", widget=forms.Textarea)    
+    question = forms.CharField(label="Ваш вопрос", widget=forms.Textarea)   
+    
+class RectangleAreaForm(forms.Form):
+    length = forms.DecimalField(label="Длина (м)", min_value=Decimal('0.1'))
+    width = forms.DecimalField(label="Ширина (м)", min_value=Decimal('0.1'))     
+    width = forms.DecimalField(label="Ширина (м)", min_value=Decimal('0.1'))     
