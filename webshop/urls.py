@@ -33,6 +33,7 @@ urlpatterns = [
 
     
     # --- УМНЫЙ РЕДИРЕКТ ПО ИМЕНИ ПРОИЗВОДИТЕЛЯ ---
+    path('products/add-default-manufacturer/', views.ProductCreateDefaultManufacturerView.as_view(), name='product_create_default_manufacturer'),
     path('products/add-initial/', views.ProductCreateWithInitialView.as_view(), name='product_create_initial'),
     path('products/add/', views.ProductCreateView.as_view(), name='product_create_page'),
     path('products/add/success/', views.ProductCreatedSuccessView.as_view(), name='product_created_success_page'),

@@ -27,6 +27,7 @@ from .forms import UserRegistrationForm
 from .forms import CustomProductOrderForm
 from .forms import ProductCreateForm
 from .forms import ManufacturerCreateForm
+from .forms import ProductCreateNoManufacturerForm
 
 
 
@@ -830,3 +831,28 @@ class ProductCreateWithInitialView(CreateView):
             'price': str(self.object.price),
             'stock_quantity': self.object.stock_quantity,
         })      
+        
+class ProductCreateDefaultManufacturerView(CreateView):
+    model = Product
+    form_class = ProductCreateNoManufacturerForm
+    template_name = 'webshop/product_create_default_manufacturer.html'
+
+    def form_valid(self, form):
+        default_manufacturer = Manufacturer.objects.filter(name='Acme Corp').first()
+        if not default_manufacturer:
+            default_manufacturer = Manufacturer.objects.first()
+        if not default_manufacturer:
+            default_manufacturer = Manufacturer.objects.create(name='Acme Corp')
+
+        form.instance.manufacturer = default_manufacturer
+        print(f"[🏭] Товар '{form.instance.name}' привязан к '{default_manufacturer.name}'")
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('product_created_success_page') + '?' + urlencode({
+            'product_name': self.object.name,
+            'manufacturer_name': self.object.manufacturer.name,
+            'sku': self.object.sku,
+            'price': str(self.object.price),
+            'stock_quantity': self.object.stock_quantity,
+        })       
