@@ -110,27 +110,20 @@ class CustomProductOrderForm(forms.Form):
     desired_color = forms.ChoiceField(label="Желаемый цвет", choices=COLOR_CHOICES)
     quantity = forms.IntegerField(label="Количество", min_value=1)   
     
-class ProductCreateForm(forms.Form):
-    name = forms.CharField(label="Название товара", max_length=200)
-    manufacturer = forms.ModelChoiceField(
-        queryset=Manufacturer.objects.all(),
-        label="Производитель"
-    )
-    sku = forms.CharField(label="Артикул", max_length=50)
-    description = forms.CharField(label="Описание", widget=forms.Textarea, required=False)
-    price = forms.DecimalField(
-        label="Цена",
-        max_digits=10,
-        decimal_places=2,
-        min_value=Decimal('0.01')
-    )
-    stock_quantity = forms.IntegerField(label="Количество на складе", min_value=0)
+class ProductCreateForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = ['name', 'manufacturer', 'sku', 'description', 'price', 'stock_quantity']
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 4}),
+        }
 
     def clean_sku(self):
         sku = self.cleaned_data['sku']
+        # Исключаем текущий объект (для UpdateView), но для CreateView просто проверяем
         if Product.objects.filter(sku=sku).exists():
             raise forms.ValidationError("Товар с таким артикулом уже существует.")
-        return sku 
+        return sku
     
 class ManufacturerCreateForm(forms.ModelForm):
     class Meta:

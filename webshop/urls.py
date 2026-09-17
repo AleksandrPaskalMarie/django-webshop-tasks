@@ -31,9 +31,11 @@ urlpatterns = [
     path('old-products-url/<str:old_sku>/', OldProductURLRedirectView.as_view(), name='old_product_url_redirect'),
     path('legacy-search/', LegacySearchRedirectView.as_view(), name='legacy_search_redirect'),
 
+    
     # --- УМНЫЙ РЕДИРЕКТ ПО ИМЕНИ ПРОИЗВОДИТЕЛЯ ---
+    path('products/add-initial/', views.ProductCreateWithInitialView.as_view(), name='product_create_initial'),
     path('products/add/', views.ProductCreateView.as_view(), name='product_create_page'),
-path('products/add/success/', views.ProductCreatedSuccessView.as_view(), name='product_created_success_page'),
+    path('products/add/success/', views.ProductCreatedSuccessView.as_view(), name='product_created_success_page'),
     path('find-manufacturer/', views.ManufacturerLookupRedirectView.as_view(), name='find_manufacturer'),
     path('products/sortable/', views.ProductSortableListView.as_view(), name='product_sortable_list'),
     path('product-unavailable/', views.ProductUnavailableView.as_view(), name='product_unavailable'),

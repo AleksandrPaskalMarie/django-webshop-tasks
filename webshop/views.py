@@ -809,4 +809,24 @@ class ManufacturerCreatedSuccessView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['manufacturer_name'] = self.request.GET.get('manufacturer_name', '')
-        return context    
+        return context 
+    
+class ProductCreateWithInitialView(CreateView):
+    model = Product
+    form_class = ProductCreateForm
+    template_name = 'webshop/product_create_initial.html'
+
+    def get_initial(self):
+        initial = super().get_initial()
+        initial['stock_quantity'] = 10
+        return initial
+
+    def get_success_url(self):
+        # Формируем URL с данными о созданном товаре
+        return reverse('product_created_success_page') + '?' + urlencode({
+            'product_name': self.object.name,
+            'manufacturer_name': self.object.manufacturer.name,
+            'sku': self.object.sku,
+            'price': str(self.object.price),
+            'stock_quantity': self.object.stock_quantity,
+        })      
