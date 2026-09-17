@@ -6,7 +6,7 @@ from django.http import HttpResponse, JsonResponse
 from .models import Manufacturer, Product
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
-from django.views.generic import TemplateView, RedirectView  # ← Добавь RedirectView
+from django.views.generic import TemplateView, RedirectView, CreateView
 from django.urls import reverse
 from django.views.generic import DetailView
 from django.db.models.functions import Abs
@@ -14,7 +14,8 @@ from django.db.models import F
 from django.views.generic import ListView
 from django.db.models import Count, Q
 from django.views.generic import FormView
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
+from urllib.parse import urlencode
 from .forms import ContactForm
 from .forms import FeedbackForm
 from .forms import NewsletterSignupForm
@@ -25,6 +26,7 @@ from .forms import RectangleAreaForm
 from .forms import UserRegistrationForm
 from .forms import CustomProductOrderForm
 from .forms import ProductCreateForm
+from .forms import ManufacturerCreateForm
 
 
 
@@ -780,3 +782,31 @@ class ProductCreatedSuccessView(TemplateView):
         context['price'] = self.request.GET.get('price', '')
         context['stock_quantity'] = self.request.GET.get('stock_quantity', '')
         return context      
+
+class ManufacturerCreateView(CreateView):
+    model = Manufacturer
+    form_class = ManufacturerCreateForm
+    template_name = 'webshop/manufacturer_create_form.html'
+
+    def form_valid(self, form):
+        response = super().form_valid(form)  # объект сохранён, доступен в self.object
+
+        # Логируем имя производителя
+        print(f"[🏭] Создан производитель: {self.object.name}")
+
+        return response
+
+    def get_success_url(self):
+        # Формируем URL с именем производителя
+        return reverse('manufacturer_created_success_page') + '?' + urlencode({
+            'manufacturer_name': self.object.name
+        })
+
+
+class ManufacturerCreatedSuccessView(TemplateView):
+    template_name = 'webshop/manufacturer_created_success.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['manufacturer_name'] = self.request.GET.get('manufacturer_name', '')
+        return context    

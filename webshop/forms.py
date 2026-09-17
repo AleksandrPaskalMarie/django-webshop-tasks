@@ -130,4 +130,9 @@ class ProductCreateForm(forms.Form):
         sku = self.cleaned_data['sku']
         if Product.objects.filter(sku=sku).exists():
             raise forms.ValidationError("Товар с таким артикулом уже существует.")
-        return sku        
+        return sku 
+    
+class ManufacturerCreateForm(forms.ModelForm):
+    class Meta:
+        model = Manufacturer
+        fields = ['name']           
