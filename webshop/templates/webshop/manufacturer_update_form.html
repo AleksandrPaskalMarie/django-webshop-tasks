@@ -1,0 +1,7 @@
+<h1>Редактировать производителя: "{{ object.name }}"</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Сохранить изменения</button>
+</form>
+<p><a href="/">Отмена / На главную</a></p>

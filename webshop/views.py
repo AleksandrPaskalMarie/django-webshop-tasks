@@ -26,8 +26,12 @@ from .forms import RectangleAreaForm
 from .forms import UserRegistrationForm
 from .forms import CustomProductOrderForm
 from .forms import ProductCreateForm
-from .forms import ManufacturerCreateForm
+from .forms import ManufacturerForm
 from .forms import ProductCreateNoManufacturerForm
+
+from django.views.generic import UpdateView
+from django.contrib import messages
+from .models import Manufacturer
 
 
 
@@ -786,7 +790,7 @@ class ProductCreatedSuccessView(TemplateView):
 
 class ManufacturerCreateView(CreateView):
     model = Manufacturer
-    form_class = ManufacturerCreateForm
+    form_class = ManufacturerForm
     template_name = 'webshop/manufacturer_create_form.html'
 
     def form_valid(self, form):
@@ -856,3 +860,36 @@ class ProductCreateDefaultManufacturerView(CreateView):
             'price': str(self.object.price),
             'stock_quantity': self.object.stock_quantity,
         })       
+        
+
+class ManufacturerUpdateView(UpdateView):
+    model = Manufacturer
+    form_class = ManufacturerForm
+    template_name = 'webshop/manufacturer_update_form.html'
+
+    def form_valid(self, form):
+        # 1. СНАЧАЛА сохраняем объект (form.save() происходит здесь)
+        self.object = form.save()
+        
+        # 2. Сохраняем имя для get_success_url
+        self.updated_name = self.object.name
+        
+        # 3. Добавляем сообщение
+        messages.success(self.request, f"Производитель '{self.object.name}' успешно обновлён!")
+        
+        # 4. Теперь вызываем super(), который вызовет get_success_url()
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('manufacturer_updated_success_page') + '?' + urlencode({
+            'manufacturer_name': self.updated_name
+        })
+
+
+class ManufacturerUpdatedSuccessView(TemplateView):
+    template_name = 'webshop/manufacturer_updated_success.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['manufacturer_name'] = self.request.GET.get('manufacturer_name', '')
+        return context        

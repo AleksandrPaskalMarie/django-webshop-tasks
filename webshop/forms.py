@@ -125,10 +125,19 @@ class ProductCreateForm(forms.ModelForm):
             raise forms.ValidationError("Товар с таким артикулом уже существует.")
         return sku
     
-class ManufacturerCreateForm(forms.ModelForm):
+class ManufacturerForm(forms.ModelForm):
     class Meta:
         model = Manufacturer
-        fields = ['name']  
+        fields = ['name']
+
+    def clean_name(self):
+        name = self.cleaned_data['name']
+        # Исключаем текущий объект из проверки
+        if Manufacturer.objects.filter(name=name).exclude(
+            pk=self.instance.pk if self.instance else None
+        ).exists():
+            raise forms.ValidationError("Производитель с таким названием уже существует.")
+        return name
         
 class ProductCreateNoManufacturerForm(forms.ModelForm):
     class Meta:
@@ -139,4 +148,6 @@ class ProductCreateNoManufacturerForm(forms.ModelForm):
         sku = self.cleaned_data['sku']
         if Product.objects.filter(sku=sku).exists():
             raise forms.ValidationError("Товар с таким артикулом уже существует.")
-        return sku                 
+        return sku  
+    
+              
